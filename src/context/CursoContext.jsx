@@ -44,7 +44,7 @@ export const CursoContextProvider = ({ children }) => {
   ) => {
     setAdding(true);
     try {
-      const user = supabase.auth.getUser();
+      // const user = supabase.auth.getUser();
       const { error, data } = await supabase
         .from("cursos")
         .insert({
@@ -53,7 +53,7 @@ export const CursoContextProvider = ({ children }) => {
           videoUrl: videoUrl,
           description: description,
           price: price,
-          userId: user.id,
+          // userId: user.id,
         })
         .select();
 
