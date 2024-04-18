@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../supabase/client";
 import { useCursos } from "../context/CursoContext";
-import Navbar from "../components/Auth/Navbar";
+import Swal from "sweetalert2";
 
 const UpdateCursoForm = () => {
   const { id } = useParams();
@@ -43,6 +43,15 @@ const UpdateCursoForm = () => {
     e.preventDefault();
     try {
       await updateCurso(id, cursoTitle, imageUrl, videoUrl, description, price);
+      Swal.fire({
+        icon: "success",
+        title: "Actualizado correctamente",
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        // Redireccionar a la página de inicio después de cerrar la alerta
+        navigate("/");
+      });
     } catch (error) {
       console.error(error);
     }
@@ -50,8 +59,6 @@ const UpdateCursoForm = () => {
 
   return (
     <>
-      <Navbar />
-
       <form onSubmit={handleSUbmit}>
         <div className="grid gap-6 mb-6 md:grid-cols-2">
           <div>

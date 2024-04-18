@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useCursos } from "../context/CursoContext";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const CursoForm = () => {
   const [cursoTitle, setCursoTitle] = useState("");
@@ -7,6 +9,8 @@ const CursoForm = () => {
   const [videoUrl, setVideoUrl] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+
+  const navigate = useNavigate();
 
   const { createCurso, adding } = useCursos();
 
@@ -20,6 +24,16 @@ const CursoForm = () => {
       setVideoUrl("");
       setDescription("");
       setPrice("");
+
+      Swal.fire({
+        icon: "success",
+        title: "Creado correctamente",
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        // Redireccionar a la página de inicio después de cerrar la alerta
+        navigate("/");
+      });
     } catch (error) {
       console.error(error);
     }

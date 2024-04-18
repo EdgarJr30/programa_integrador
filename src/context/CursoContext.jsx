@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { supabase } from "../supabase/client";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const CursoContext = createContext();
 
@@ -67,21 +68,72 @@ export const CursoContextProvider = ({ children }) => {
     }
   };
 
+  // const deleteCurso = async (id) => {
+  //   try {
+  //     const { error, data } = await supabase
+  //       .from("cursos")
+  //       .delete()
+  //       .eq("id", id)
+  //       .select();
+
+  //     console.log(data);
+  //     if (error) throw error;
+
+  //     setCursos(cursos.filter((curso) => curso.id !== id));
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const deleteCurso = async (id) => {
-    try {
-      const { error, data } = await supabase
-        .from("cursos")
-        .delete()
-        .eq("id", id)
-        .select();
+    // Mostrar confirmación con SweetAlert
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¡No podrás revertir esto!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "¡Sí, eliminar!",
+      cancelButtonText: "Cancelar",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const { error, data } = await supabase
+            .from("cursos")
+            .delete()
+            .eq("id", id)
+            .select();
 
-      console.log(data);
-      if (error) throw error;
+          if (error) {
+            throw error;
+          }
 
-      setCursos(cursos.filter((curso) => curso.id !== id));
-    } catch (error) {
-      console.error(error);
-    }
+          console.log(data); // Puedes manejar la respuesta de la eliminación si lo necesitas
+
+          // Aquí puedes agregar cualquier actualización de estado u otra lógica necesaria después de eliminar el curso
+
+          // Mostrar alerta de éxito
+          Swal.fire({
+            title: "Eliminado",
+            text: "El curso ha sido eliminado correctamente",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          setCursos(cursos.filter((curso) => curso.id !== id));
+        } catch (error) {
+          console.error(error);
+          // Mostrar alerta de error si la eliminación falla
+          Swal.fire({
+            title: "Error",
+            text: "Hubo un problema al intentar eliminar el curso",
+            icon: "error",
+            confirmButtonText: "Ok",
+          });
+        }
+      }
+    });
   };
 
   const updateCurso = async (
